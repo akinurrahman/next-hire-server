@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { AnyZodObject } from "zod";
-import { HTTP_STATUS } from "../constants/http-status";
+import { formatZodErrors } from "../utils/format-zod-errors";
 
-const validate =
+const validateResource =
   (schema: AnyZodObject) =>
   (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -11,9 +11,14 @@ const validate =
         query: req.query,
         params: req.params,
       });
-    } catch (error) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).send(error);
+
+      return next();
+    } catch (error: any) {
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: formatZodErrors(error),
+      });
     }
   };
 
-export default validate;
+export default validateResource;

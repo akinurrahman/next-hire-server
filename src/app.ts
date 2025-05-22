@@ -10,6 +10,10 @@ import connectDB from "./utils/connect";
 import baseRouter from './routes'
 
 const app = express();
+app.use(express.json())
+
+
+
 app.use("/", baseRouter)
 
 const port = config.get<number>("PORT");

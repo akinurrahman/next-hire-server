@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AnyZodObject } from "zod";
 import { formatZodErrors } from "../utils/format-zod-errors";
+import { BadRequestError } from "../utils/errors";
 
 const validateResource =
   (schema: AnyZodObject) =>
@@ -14,10 +15,7 @@ const validateResource =
 
       return next();
     } catch (error: any) {
-      return res.status(400).json({
-        message: "Validation failed",
-        errors: formatZodErrors(error),
-      });
+      throw new BadRequestError("Validation failed", formatZodErrors(error));
     }
   };
 

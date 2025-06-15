@@ -13,7 +13,8 @@ const errorHandler = (
   return res.status(err.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
     success: false,
     message: err.message || "Internal Server Error",
-    errors: err.errors || null,
+    errors: err.errors || undefined,
+    errorCode: err.errorCode || undefined,
   });
 };
 

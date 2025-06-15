@@ -1,2 +1,74 @@
+# Dependency directories
+node_modules/
+bower_components/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
 .env
-node_modules
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Cursor AI
+.cursor/
+.cursor/rules/
+
+# Build output
+dist/
+build/
+tmp/
+temp/
+.cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/editor folders
+.vscode/
+.idea/
+*.sw?
+*.sublime-project
+*.sublime-workspace
+
+# Test coverage
+coverage/
+
+# MongoDB data dumps or temp files
+dump/
+*.pid
+
+# Optional: Docker
+docker-compose.override.yml
+*.local.yml
+
+# Optional: PM2 logs
+pids/
+*.pid
+*.seed
+*.log
+
+# Optional: Lint cache
+.eslintcache
+
+# Optional: TS build files
+*.tsbuildinfo
+
+# Optional: VS Code workspace settings
+*.code-workspace
+
+# Optional: npm version files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+
+.cursor
+.cursor/rules

@@ -1,14 +1,28 @@
-import UserModel from "../models/user.model";
 import { CreateUserInput } from "../schema/user.schema";
-import { ConflictError, InternalServerError } from "../utils/errors";
+import { hashOtp, hashPassword } from "../utils/hash";
+import { generateOtp } from "../utils/otp";
+import {
+  createUnverifiedUser,
+  ensureUnverifiedNotExists,
+  ensureUserNotExists,
+  sendVerificationOtp,
+} from "../utils/user.helpers";
 
-export const createUser = async (input: CreateUserInput) => {
-  try {
-    return await UserModel.create(input);
-  } catch (error: any) {
-    if (error.code === 11000) {
-      throw new ConflictError("User already exists!");
-    }
-    throw new InternalServerError("Failed to create user");
-  }
+export const registerUser = async (input: CreateUserInput) => {
+  await ensureUserNotExists(input.email);
+  await ensureUnverifiedNotExists(input.email);
+
+  const otp = generateOtp();
+  const hash = hashOtp(otp.toString());
+
+  const hashedPassword = await hashPassword(input.password);
+
+  const newUnverifiedUser = await createUnverifiedUser(
+    input,
+    hashedPassword,
+    hash
+  );
+
+  await sendVerificationOtp(input.email, otp);
+  return newUnverifiedUser;
 };

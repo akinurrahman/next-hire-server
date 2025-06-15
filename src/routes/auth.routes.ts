@@ -5,6 +5,8 @@ import { createUserSchema } from "../schema/user.schema";
 
 const router = Router();
 
-router.route("/register").post(validateResource(createUserSchema), createUserHandler);
+router
+  .route("/register")
+  .post(validateResource(createUserSchema), createUserHandler);
 
 export default router;

@@ -3,15 +3,18 @@ import { HTTP_STATUS } from "../constants/http-status";
 export class AppError extends Error {
   public readonly statusCode: number;
   public readonly errors: Record<string, string> | null;
+  public readonly errorCode: string | null;
 
   constructor(
     message: string,
     statusCode = HTTP_STATUS.INTERNAL_SERVER_ERROR,
-    errors: Record<string, string> | null = null
+    errors: Record<string, string> | null = null,
+    errorCode: string | null = null
   ) {
     super(message);
     this.statusCode = statusCode;
     this.errors = errors;
+    this.errorCode = errorCode;
     Error.captureStackTrace(this, this.constructor);
   }
 }
@@ -26,8 +29,8 @@ export class BadRequestError extends AppError {
 }
 
 export class UnauthorizedError extends AppError {
-  constructor(message = "Unauthorized") {
-    super(message, HTTP_STATUS.UNAUTHORIZED);
+  constructor(message = "Unauthorized", errorCode: string | null = null) {
+    super(message, HTTP_STATUS.UNAUTHORIZED, null, errorCode);
   }
 }
 

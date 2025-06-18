@@ -2,8 +2,14 @@ import unVerifiedUserModel from "../models/unverified-user.model";
 import UserModel from "../models/user.model";
 import { CreateUserInput } from "../schema/user.schema";
 import { UnauthorizedError } from "../utils/errors";
-import { compareOtp, hashOtp, hashPassword } from "../utils/hash";
+import {
+  compareOtp,
+  comparePassword,
+  hashOtp,
+  hashPassword,
+} from "../utils/hash";
 import { generateOtp } from "../utils/otp";
+import { generateTokens, verifyRefreshToken } from "../utils/jwt";
 import {
   createUnverifiedUser,
   ensureUnverifiedNotExists,
@@ -45,7 +51,16 @@ export const verifyOtp = async (email: string, otp: string) => {
   });
 
   await unVerifiedUserModel.deleteOne({ email });
-  return user;
+
+  const tokens = generateTokens({
+    userId: user._id.toString(),
+    email: user.email,
+  });
+
+  return {
+    user,
+    ...tokens,
+  };
 };
 
 export const resendOtp = async (email: string) => {
@@ -66,4 +81,52 @@ export const resendOtp = async (email: string) => {
   await sendVerificationOtp(email, otp);
 
   return unverifiedUser;
+};
+
+export const loginUser = async (email: string, password: string) => {
+  const user = await UserModel.findOne({ email });
+
+  const isPasswordCorrect =
+    user && (await comparePassword(password, user.password));
+  if (!user || !isPasswordCorrect)
+    throw new UnauthorizedError(
+      "Invalid email or password",
+      "INVALID_CREDIENTIALS"
+    );
+
+  const tokens = generateTokens({
+    userId: user._id.toString(),
+    email: user.email,
+  });
+
+  return {
+    user,
+    ...tokens,
+  };
+};
+
+export const refreshToken = async (refreshToken: string) => {
+  try {
+    const payload = verifyRefreshToken(refreshToken);
+    const user = await UserModel.findById(payload.userId);
+
+    if (!user) {
+      throw new UnauthorizedError("User not found", "USER_NOT_FOUND");
+    }
+
+    const tokens = generateTokens({
+      userId: user._id.toString(),
+      email: user.email,
+    });
+
+    return {
+      user,
+      ...tokens,
+    };
+  } catch (error) {
+    throw new UnauthorizedError(
+      "Invalid refresh token",
+      "INVALID_REFRESH_TOKEN"
+    );
+  }
 };

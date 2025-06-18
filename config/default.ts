@@ -4,4 +4,5 @@ export default {
   saltWorkFactor: 10,
   smtpEmail: process.env.SMTP_EMAIL || "",
   smtpPassword: process.env.SMTP_PASSWORD || "",
+  JWT_SECRET: process.env.JWT_SECRET,
 };

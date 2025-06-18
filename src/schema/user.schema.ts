@@ -24,25 +24,43 @@ export const createUserSchema = z.object({
     }),
 });
 
-export type CreateUserInput = Omit<
-  z.infer<typeof createUserSchema>["body"],
-  "confirmPassword"
->;
-
-
 export const verifyOtpSchema = z.object({
-  body : z.object({
-    email: z.string({ required_error: "Email is required" }).email("Not a valid email"),
+  body: z.object({
+    email: z
+      .string({ required_error: "Email is required" })
+      .email("Not a valid email"),
     otp: z.string({ required_error: "OTP is required" }),
   }),
 });
 
-export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>["body"];
-
 export const resendOtpSchema = z.object({
-  body : z.object({
-    email : z.string({ required_error: "Email is required" }).email("Not a valid email"),
-  })
-})
+  body: z.object({
+    email: z
+      .string({ required_error: "Email is required" })
+      .email("Not a valid email"),
+  }),
+});
 
+export const loginSchema = z.object({
+  body: z.object({
+    email: z
+      .string({ required_error: "Email is required" })
+      .email("Not a valid email"),
+    password: z.string({ required_error: "Password is required" }),
+  }),
+});
+
+export const refreshTokenSchema = z.object({
+  body: z.object({
+    refreshToken: z.string({ required_error: "Refresh token is required" }),
+  }),
+});
+
+export type CreateUserInput = Omit<
+  z.infer<typeof createUserSchema>["body"],
+  "confirmPassword"
+>;
+export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>["body"];
 export type ResendOtpInput = z.infer<typeof resendOtpSchema>["body"];
+export type LoginInput = z.infer<typeof loginSchema>["body"];
+export type RefreshTokenInput = z.infer<typeof refreshTokenSchema>["body"];

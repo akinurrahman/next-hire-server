@@ -5,7 +5,7 @@ import { HydratedDocument } from "mongoose";
 
 export interface UserDocument extends Document {
   email: string;
-  name: string;
+  fullName: string;
   password: string;
   createdAt: Date;
   updatedAt: Date;
@@ -15,7 +15,7 @@ export interface UserDocument extends Document {
 const userSchema = new Schema(
   {
     email: { type: String, required: true, unique: true },
-    name: { type: String, required: true },
+    fullName: { type: String, required: true },
     password: { type: String, required: true },
   },
   { timestamps: true }

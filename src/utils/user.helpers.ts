@@ -13,7 +13,7 @@ export const ensureUserNotExists = async (email: string) => {
 export const ensureUnverifiedNotExists = async (email: string) => {
   const unverifiedUser = await unVerifiedUserModel.findOne({ email });
   if (unverifiedUser) {
-    throw new UnauthorizedError("email not verified", "EMAIL_NOT_VERIFIED");
+    throw new UnauthorizedError("account already exists, but not verified", "EMAIL_NOT_VERIFIED");
   }
 };
 

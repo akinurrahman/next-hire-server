@@ -28,3 +28,13 @@ export type CreateUserInput = Omit<
   z.infer<typeof createUserSchema>["body"],
   "confirmPassword"
 >;
+
+
+export const verifyOtpSchema = z.object({
+  body : z.object({
+    email: z.string({ required_error: "Email is required" }).email("Not a valid email"),
+    otp: z.string({ required_error: "OTP is required" }),
+  }),
+});
+
+export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>["body"];

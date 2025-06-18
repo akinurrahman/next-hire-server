@@ -1,5 +1,8 @@
+import unVerifiedUserModel from "../models/unverified-user.model";
+import UserModel from "../models/user.model";
 import { CreateUserInput } from "../schema/user.schema";
-import { hashOtp, hashPassword } from "../utils/hash";
+import { UnauthorizedError } from "../utils/errors";
+import { compareOtp, hashOtp, hashPassword } from "../utils/hash";
 import { generateOtp } from "../utils/otp";
 import {
   createUnverifiedUser,
@@ -25,4 +28,21 @@ export const registerUser = async (input: CreateUserInput) => {
 
   await sendVerificationOtp(input.email, otp);
   return newUnverifiedUser;
+};
+
+export const verifyOtp = async (email: string, otp: string) => {
+  const unverifiedUser = await unVerifiedUserModel.findOne({ email });
+  if (!unverifiedUser) throw new UnauthorizedError("account not found", "ACCOUNT_NOT_FOUND");
+
+  const isOtpValid = compareOtp(otp, unverifiedUser.otpHash);
+  if (!isOtpValid) throw new UnauthorizedError("invalid otp", "INVALID_OTP");
+
+  const user = await UserModel.create({
+    fullName: unverifiedUser.fullName,
+    email: unverifiedUser.email,
+    password: unverifiedUser.password,
+  });
+
+  await unVerifiedUserModel.deleteOne({ email });
+  return user;
 };

@@ -19,6 +19,7 @@ const unVerifiedUserSchema = new Schema<OtpVerificationDocument>(
       type: String,
       required: true,
       unique: true,
+      index : true
     },
     password: {
       type: String,

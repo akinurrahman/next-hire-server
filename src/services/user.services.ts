@@ -32,7 +32,8 @@ export const registerUser = async (input: CreateUserInput) => {
 
 export const verifyOtp = async (email: string, otp: string) => {
   const unverifiedUser = await unVerifiedUserModel.findOne({ email });
-  if (!unverifiedUser) throw new UnauthorizedError("account not found", "ACCOUNT_NOT_FOUND");
+  if (!unverifiedUser)
+    throw new UnauthorizedError("account not found", "ACCOUNT_NOT_FOUND");
 
   const isOtpValid = compareOtp(otp, unverifiedUser.otpHash);
   if (!isOtpValid) throw new UnauthorizedError("invalid otp", "INVALID_OTP");
@@ -45,4 +46,24 @@ export const verifyOtp = async (email: string, otp: string) => {
 
   await unVerifiedUserModel.deleteOne({ email });
   return user;
+};
+
+export const resendOtp = async (email: string) => {
+  const unverifiedUser = await unVerifiedUserModel.findOne({ email });
+  if (!unverifiedUser)
+    throw new UnauthorizedError(
+      "This email is either already verified or not registered",
+      "EMAIL_NOT_ELIGIBLE_FOR_OTP"
+    );
+
+  const otp = generateOtp();
+  const hashedOtp = hashOtp(otp.toString());
+
+  await unVerifiedUserModel.updateOne(
+    { email },
+    { $set: { otpHash: hashedOtp } }
+  );
+  await sendVerificationOtp(email, otp);
+
+  return unverifiedUser;
 };

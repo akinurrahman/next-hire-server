@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { createUserHandler, verifyOtpHandler } from "../controllers/user.controllers";
+import { createUserHandler, resendOtpHandler, verifyOtpHandler } from "../controllers/user.controllers";
 import validateResource from "../middlewares/validate-resouce";
-import { createUserSchema, verifyOtpSchema } from "../schema/user.schema";
+import { createUserSchema, resendOtpSchema, verifyOtpSchema } from "../schema/user.schema";
 
 const router = Router();
 
@@ -10,5 +10,6 @@ router
   .post(validateResource(createUserSchema), createUserHandler);
 
 router.route("/verify-otp").post(validateResource(verifyOtpSchema), verifyOtpHandler);
+router.route("/resend-otp").post(validateResource(resendOtpSchema), resendOtpHandler);
 
 export default router;

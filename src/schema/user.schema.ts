@@ -1,4 +1,4 @@
-import { z, TypeOf } from "zod";
+import { z } from "zod";
 
 export const createUserSchema = z.object({
   body: z
@@ -38,3 +38,11 @@ export const verifyOtpSchema = z.object({
 });
 
 export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>["body"];
+
+export const resendOtpSchema = z.object({
+  body : z.object({
+    email : z.string({ required_error: "Email is required" }).email("Not a valid email"),
+  })
+})
+
+export type ResendOtpInput = z.infer<typeof resendOtpSchema>["body"];

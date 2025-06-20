@@ -6,6 +6,7 @@ export interface OtpVerificationDocument extends Document {
   email: string;
   password: String;
   otpHash: string;
+  otpExpiresAt: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -28,6 +29,10 @@ const unVerifiedUserSchema = new Schema<OtpVerificationDocument>(
     },
     otpHash: {
       type: String,
+      required: true,
+    },
+    otpExpiresAt: {
+      type: Date,
       required: true,
     },
   },

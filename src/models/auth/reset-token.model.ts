@@ -16,7 +16,7 @@ const resetTokenSchema = new Schema<ResetTokenDocument>(
     expiresAt: {
       type: Date,
       required: true,
-      index: { expires: 0 },
+      expires: 0,
     },
   },
   { timestamps: true }

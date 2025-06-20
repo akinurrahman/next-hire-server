@@ -49,6 +49,9 @@ export const verifyOtp = async (email: string, otp: string) => {
   if (!unverifiedUser)
     throw new UnauthorizedError("account not found", "ACCOUNT_NOT_FOUND");
 
+  if (unverifiedUser.otpExpiresAt < new Date())
+    throw new UnauthorizedError("otp expired", "OTP_EXPIRED");
+
   const isOtpValid = compareOtp(otp, unverifiedUser.otpHash);
   if (!isOtpValid) throw new UnauthorizedError("invalid otp", "INVALID_OTP");
 

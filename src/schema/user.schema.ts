@@ -58,8 +58,25 @@ export const refreshTokenSchema = z.object({
 
 export const forgotPasswordSchema = z.object({
   body: z.object({
-    email: z.string({ required_error: "Email is required" }).email("Not a valid email"),
+    email: z
+      .string({ required_error: "Email is required" })
+      .email("Not a valid email"),
   }),
+});
+
+export const resetPasswordSchema = z.object({
+  body: z
+    .object({
+      token: z.string({ required_error: "Token is required" }),
+      password: z.string({ required_error: "Password is required" }),
+      confirmPassword: z.string({
+        required_error: "Confirm password is required",
+      }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "Password do not match",
+      path: ["confirmPassword"],
+    }),
 });
 
 export type CreateUserInput = Omit<
@@ -71,3 +88,7 @@ export type ResendOtpInput = z.infer<typeof resendOtpSchema>["body"];
 export type LoginInput = z.infer<typeof loginSchema>["body"];
 export type RefreshTokenInput = z.infer<typeof refreshTokenSchema>["body"];
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>["body"];
+export type ResetPasswordInput = Omit<
+  z.infer<typeof resetPasswordSchema>["body"],
+  "confirmPassword"
+>;

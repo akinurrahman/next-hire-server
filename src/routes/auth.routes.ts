@@ -6,6 +6,7 @@ import {
   verifyOtpHandler,
   refreshTokenHandler,
   forgotPasswordHandler,
+  resetPasswordHandler,
 } from "../controllers/user.controllers";
 import validateResource from "../middlewares/validate-resouce";
 import {
@@ -15,6 +16,7 @@ import {
   verifyOtpSchema,
   refreshTokenSchema,
   forgotPasswordSchema,
+  resetPasswordSchema,
 } from "../schema/user.schema";
 
 const router = Router();
@@ -29,6 +31,15 @@ router
     validateResource(refreshTokenSchema),
     refreshTokenHandler
   )
-  .post("/forgot-password", validateResource(forgotPasswordSchema), forgotPasswordHandler)
+  .post(
+    "/forgot-password",
+    validateResource(forgotPasswordSchema),
+    forgotPasswordHandler
+  )
+  .post(
+    "/reset-password",
+    validateResource(resetPasswordSchema),
+    resetPasswordHandler
+  );
 
 export default router;

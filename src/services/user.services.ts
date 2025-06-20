@@ -9,7 +9,12 @@ import {
   hashPassword,
 } from "../utils/hash";
 import { generateOtp } from "../utils/otp";
-import { generateResetPasswordToken, generateTokens, verifyRefreshToken } from "../utils/jwt";
+import {
+  generateResetPasswordToken,
+  generateTokens,
+  verifyRefreshToken,
+  verifyResetPasswordToken,
+} from "../utils/jwt";
 import {
   createUnverifiedUser,
   ensureUnverifiedNotExists,
@@ -138,10 +143,9 @@ export const forgotPassword = async (email: string) => {
   const user = await UserModel.findOne({ email });
   if (!user) throw new UnauthorizedError("User not found", "USER_NOT_FOUND");
 
-
   const resetToken = await ResetToken.create({
     email,
-    token : generateResetPasswordToken(email),
+    token: generateResetPasswordToken(email),
     expiresAt: new Date(Date.now() + 1000 * 60 * 10),
   });
 
@@ -154,4 +158,13 @@ export const forgotPassword = async (email: string) => {
       fullName: user.fullName,
     }),
   });
+};
+
+export const resetPassword = async (token: string, password: string) => {
+  const { email } = verifyResetPasswordToken(token);
+  const user = await UserModel.findOne({ email });
+  if (!user) throw new UnauthorizedError("User not found", "USER_NOT_FOUND");
+
+  const hashedPassword = await hashPassword(password);
+  await UserModel.updateOne({ email }, { $set: { password: hashedPassword } });
 };

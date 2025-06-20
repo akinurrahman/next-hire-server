@@ -6,6 +6,7 @@ import {
   verifyOtp,
   refreshToken,
   forgotPassword,
+  resetPassword,
 } from "../services/user.services";
 import {
   CreateUserInput,
@@ -14,6 +15,7 @@ import {
   VerifyOtpInput,
   RefreshTokenInput,
   ForgotPasswordInput,
+  ResetPasswordInput,
 } from "../schema/user.schema";
 import asyncHandler from "../utils/async-handler";
 import { sendResponse } from "../utils/api-response";
@@ -99,5 +101,13 @@ export const forgotPasswordHandler = asyncHandler(
     const { email } = req.body;
     await forgotPassword(email);
     sendResponse(res, undefined, "Password reset email sent", 200);
+  }
+);
+
+export const resetPasswordHandler = asyncHandler(
+  async (req: Request<{}, {}, ResetPasswordInput>, res: Response) => {
+    const { token, password } = req.body;
+    await resetPassword(token, password);
+    sendResponse(res, undefined, "Password reset successfully", 200);
   }
 );

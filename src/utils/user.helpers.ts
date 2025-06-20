@@ -1,9 +1,9 @@
-import unVerifiedUserModel from "../models/unverified-user.model";
+import unVerifiedUserModel from "../models/auth/unverified-user.model";
 import { sendEmail } from "./mail";
 import { ConflictError, UnauthorizedError } from "./errors";
 import { CreateUserInput } from "../schema/user.schema";
 import { generateOtpVerificationEmail } from "../templates/otp-verification-email";
-import UserModel from "../models/user.model";
+import UserModel from "../models/auth/user.model";
 
 export const ensureUserNotExists = async (email: string) => {
   const user = await UserModel.findOne({ email });
@@ -13,7 +13,10 @@ export const ensureUserNotExists = async (email: string) => {
 export const ensureUnverifiedNotExists = async (email: string) => {
   const unverifiedUser = await unVerifiedUserModel.findOne({ email });
   if (unverifiedUser) {
-    throw new UnauthorizedError("account already exists, but not verified", "EMAIL_NOT_VERIFIED");
+    throw new UnauthorizedError(
+      "account already exists, but not verified",
+      "EMAIL_NOT_VERIFIED"
+    );
   }
 };
 
@@ -31,7 +34,7 @@ export const createUnverifiedUser = async (
 };
 
 export const sendVerificationOtp = async (email: string, otp: number) => {
-    const { text, html } = generateOtpVerificationEmail(otp);
+  const { text, html } = generateOtpVerificationEmail(otp);
   await sendEmail({
     to: email,
     subject: "OTP for verification",

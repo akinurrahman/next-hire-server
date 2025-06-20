@@ -5,6 +5,7 @@ import {
   resendOtp,
   verifyOtp,
   refreshToken,
+  forgotPassword,
 } from "../services/user.services";
 import {
   CreateUserInput,
@@ -12,6 +13,7 @@ import {
   ResendOtpInput,
   VerifyOtpInput,
   RefreshTokenInput,
+  ForgotPasswordInput,
 } from "../schema/user.schema";
 import asyncHandler from "../utils/async-handler";
 import { sendResponse } from "../utils/api-response";
@@ -89,5 +91,13 @@ export const refreshTokenHandler = asyncHandler(
     };
 
     sendResponse(res, responseData, "Token refreshed successfully", 200);
+  }
+);
+
+export const forgotPasswordHandler = asyncHandler(
+  async (req: Request<{}, {}, ForgotPasswordInput>, res: Response) => {
+    const { email } = req.body;
+    await forgotPassword(email);
+    sendResponse(res, undefined, "Password reset email sent", 200);
   }
 );

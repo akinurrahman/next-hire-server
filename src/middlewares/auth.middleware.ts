@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/jwt";
 import { UnauthorizedError } from "../utils/errors";
-import UserModel from "../models/user.model";
+import UserModel from "../models/auth/user.model";
 
 interface AuthenticatedRequest extends Request {
   user?: any;

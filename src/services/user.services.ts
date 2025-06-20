@@ -1,5 +1,5 @@
-import unVerifiedUserModel from "../models/unverified-user.model";
-import UserModel from "../models/user.model";
+import unVerifiedUserModel from "../models/auth/unverified-user.model";
+import UserModel from "../models/auth/user.model";
 import { CreateUserInput } from "../schema/user.schema";
 import { UnauthorizedError } from "../utils/errors";
 import {
@@ -9,13 +9,16 @@ import {
   hashPassword,
 } from "../utils/hash";
 import { generateOtp } from "../utils/otp";
-import { generateTokens, verifyRefreshToken } from "../utils/jwt";
+import { generateResetPasswordToken, generateTokens, verifyRefreshToken } from "../utils/jwt";
 import {
   createUnverifiedUser,
   ensureUnverifiedNotExists,
   ensureUserNotExists,
   sendVerificationOtp,
 } from "../utils/user.helpers";
+import ResetToken from "../models/auth/reset-token.model";
+import { sendResetPasswordOtp } from "../templates/reset-password-token";
+import { sendEmail } from "../utils/mail";
 
 export const registerUser = async (input: CreateUserInput) => {
   await ensureUserNotExists(input.email);
@@ -129,4 +132,26 @@ export const refreshToken = async (refreshToken: string) => {
       "INVALID_REFRESH_TOKEN"
     );
   }
+};
+
+export const forgotPassword = async (email: string) => {
+  const user = await UserModel.findOne({ email });
+  if (!user) throw new UnauthorizedError("User not found", "USER_NOT_FOUND");
+
+
+  const resetToken = await ResetToken.create({
+    email,
+    token : generateResetPasswordToken(email),
+    expiresAt: new Date(Date.now() + 1000 * 60 * 10),
+  });
+
+  await sendEmail({
+    to: email,
+    subject: "Reset Password",
+    html: sendResetPasswordOtp({
+      email,
+      token: resetToken.token,
+      fullName: user.fullName,
+    }),
+  });
 };

@@ -1,6 +1,7 @@
-import { Document, model, Schema } from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
 
 export interface OtpVerificationDocument extends Document {
+  _id: Types.ObjectId;
   fullName: String;
   email: string;
   password: String;
@@ -19,7 +20,7 @@ const unVerifiedUserSchema = new Schema<OtpVerificationDocument>(
       type: String,
       required: true,
       unique: true,
-      index : true
+      index: true,
     },
     password: {
       type: String,

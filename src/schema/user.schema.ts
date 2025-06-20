@@ -56,6 +56,12 @@ export const refreshTokenSchema = z.object({
   }),
 });
 
+export const forgotPasswordSchema = z.object({
+  body: z.object({
+    email: z.string({ required_error: "Email is required" }).email("Not a valid email"),
+  }),
+});
+
 export type CreateUserInput = Omit<
   z.infer<typeof createUserSchema>["body"],
   "confirmPassword"
@@ -64,3 +70,4 @@ export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>["body"];
 export type ResendOtpInput = z.infer<typeof resendOtpSchema>["body"];
 export type LoginInput = z.infer<typeof loginSchema>["body"];
 export type RefreshTokenInput = z.infer<typeof refreshTokenSchema>["body"];
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>["body"];

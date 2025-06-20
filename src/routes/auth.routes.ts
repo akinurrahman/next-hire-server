@@ -5,6 +5,7 @@ import {
   resendOtpHandler,
   verifyOtpHandler,
   refreshTokenHandler,
+  forgotPasswordHandler,
 } from "../controllers/user.controllers";
 import validateResource from "../middlewares/validate-resouce";
 import {
@@ -13,23 +14,21 @@ import {
   resendOtpSchema,
   verifyOtpSchema,
   refreshTokenSchema,
+  forgotPasswordSchema,
 } from "../schema/user.schema";
 
 const router = Router();
 
 router
-  .route("/register")
-  .post(validateResource(createUserSchema), createUserHandler);
-
-router
-  .route("/verify-otp")
-  .post(validateResource(verifyOtpSchema), verifyOtpHandler);
-router
-  .route("/resend-otp")
-  .post(validateResource(resendOtpSchema), resendOtpHandler);
-router.route("/login").post(validateResource(loginSchema), loginHandler);
-router
-  .route("/refresh-token")
-  .post(validateResource(refreshTokenSchema), refreshTokenHandler);
+  .post("/register", validateResource(createUserSchema), createUserHandler)
+  .post("/verify-otp", validateResource(verifyOtpSchema), verifyOtpHandler)
+  .post("/resend-otp", validateResource(resendOtpSchema), resendOtpHandler)
+  .post("/login", validateResource(loginSchema), loginHandler)
+  .post(
+    "/refresh-token",
+    validateResource(refreshTokenSchema),
+    refreshTokenHandler
+  )
+  .post("/forgot-password", validateResource(forgotPasswordSchema), forgotPasswordHandler)
 
 export default router;

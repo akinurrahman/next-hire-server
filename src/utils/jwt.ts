@@ -42,3 +42,18 @@ export const verifyRefreshToken = (refreshToken: string): TokenPayload => {
     throw new Error("Invalid refresh token");
   }
 };
+
+
+export const generateResetPasswordToken = (email: string, expiresIn: number = 1000 * 60 * 10): string => {
+  return jwt.sign({ email }, JWT_SECRET, {
+    expiresIn,
+  });
+};
+
+export const verifyResetPasswordToken = (token: string) => {
+  try {
+    return jwt.verify(token, JWT_SECRET) as { email: string };
+  } catch (error) {
+    throw new Error("Invalid reset password token");
+  }
+};

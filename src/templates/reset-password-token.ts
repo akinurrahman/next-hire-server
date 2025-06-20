@@ -1,29 +1,23 @@
+import { APP_NAME, FRONTEND_URL, SUPPORT_EMAIL } from "../constants/http-status";
+
 export interface ResetPasswordEmailData {
-  email: string;
   token: string;
-  companyName?: string;
-  supportEmail?: string;
-  frontendUrl?: string;
   fullName: string;
 }
 
 export function sendResetPasswordOtp(data: ResetPasswordEmailData): string {
   const {
-    email,
     token,
     fullName,
-    companyName = "NextHire",
-    supportEmail = "support@nexthire.com",
-    frontendUrl = "https://nexthire.com",
   } = data;
 
-  const resetLink = `${frontendUrl}/reset-password?token=${token}`;
+  const resetLink = `${FRONTEND_URL}/reset-password?token=${token}`;
 
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden;">
       <!-- Header -->
       <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; color: white;">
-        <h1 style="margin: 0; font-size: 28px; font-weight: bold;">🔐 ${companyName}</h1>
+        <h1 style="margin: 0; font-size: 28px; font-weight: bold;">🔐 ${APP_NAME}</h1>
         <p style="margin: 8px 0 0 0; font-size: 16px; opacity: 0.9;">Password Reset Request</p>
       </div>
       
@@ -32,7 +26,7 @@ export function sendResetPasswordOtp(data: ResetPasswordEmailData): string {
         <h2 style="color: #333; margin: 0 0 20px 0; font-size: 20px;">Hello ${fullName}! 👋</h2>
         
         <p style="color: #666; line-height: 1.6; margin-bottom: 30px; font-size: 16px;">
-          We received a request to reset your password for your ${companyName} account. Click the button below to securely reset your password.
+          We received a request to reset your password for your ${APP_NAME} account. Click the button below to securely reset your password.
         </p>
         
         <!-- Reset Button -->
@@ -60,7 +54,7 @@ export function sendResetPasswordOtp(data: ResetPasswordEmailData): string {
         </div>
         
         <p style="color: #666; line-height: 1.6; margin-top: 30px; font-size: 16px;">
-          Once you reset your password, you'll be able to securely access your ${companyName} account again.
+          Once you reset your password, you'll be able to securely access your ${APP_NAME} account again.
         </p>
       </div>
       
@@ -68,8 +62,8 @@ export function sendResetPasswordOtp(data: ResetPasswordEmailData): string {
       <div style="background-color: #f7fafc; padding: 25px; text-align: center; border-top: 1px solid #e2e8f0;">
         <p style="margin: 0 0 15px 0; color: #4a5568; font-size: 16px;">Need help? We're here for you! 💬</p>
         <p style="margin: 0; color: #718096; font-size: 12px;">
-          Contact us at <strong>${supportEmail}</strong><br>
-          © ${new Date().getFullYear()} ${companyName}. All rights reserved.
+          Contact us at <strong>${SUPPORT_EMAIL}</strong><br>
+          © ${new Date().getFullYear()} ${APP_NAME}. All rights reserved.
         </p>
       </div>
     </div>

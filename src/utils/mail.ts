@@ -1,5 +1,6 @@
 import config from "config";
 import nodemailer from "nodemailer";
+import { APP_NAME } from "../constants/http-status";
 
 export interface SendEmailOptions {
   to: string;
@@ -26,7 +27,7 @@ export const sendEmail = async ({
   });
 
   const mailOptions = {
-    from: `"Next-Hire" <${smtpEmail}>`,
+    from: `"${APP_NAME}" <${smtpEmail}>`,
     to,
     subject,
     text,

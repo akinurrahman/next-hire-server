@@ -153,7 +153,6 @@ export const forgotPassword = async (email: string) => {
     to: email,
     subject: "Reset Password",
     html: sendResetPasswordOtp({
-      email,
       token: resetToken.token,
       fullName: user.fullName,
     }),

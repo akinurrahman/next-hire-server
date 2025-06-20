@@ -23,3 +23,8 @@ export const HTTP_STATUS = {
   BAD_GATEWAY: 502,
   SERVICE_UNAVAILABLE: 503,
 };
+
+
+export const APP_NAME = "Next-Hire";
+export const FRONTEND_URL = "http://localhost:3000";
+export const SUPPORT_EMAIL = "support@nexthire.com";

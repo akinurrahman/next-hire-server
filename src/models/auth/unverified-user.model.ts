@@ -1,4 +1,5 @@
 import { Document, model, Schema, Types } from "mongoose";
+import { ROLES } from "../../constants";
 
 export interface OtpVerificationDocument extends Document {
   _id: Types.ObjectId;
@@ -9,6 +10,7 @@ export interface OtpVerificationDocument extends Document {
   otpExpiresAt: Date;
   createdAt: Date;
   updatedAt: Date;
+  role: typeof ROLES.CANDIDATE | typeof ROLES.CANDIDATE;
 }
 
 const unVerifiedUserSchema = new Schema<OtpVerificationDocument>(
@@ -22,6 +24,11 @@ const unVerifiedUserSchema = new Schema<OtpVerificationDocument>(
       required: true,
       unique: true,
       index: true,
+    },
+    role: {
+      type: String,
+      required: true,
+      enum: [ROLES.CANDIDATE, ROLES.RECRUITER],
     },
     password: {
       type: String,

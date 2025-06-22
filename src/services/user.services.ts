@@ -59,6 +59,7 @@ export const verifyOtp = async (email: string, otp: string) => {
     fullName: unverifiedUser.fullName,
     email: unverifiedUser.email,
     password: unverifiedUser.password,
+    role: unverifiedUser.role,
   });
 
   await unVerifiedUserModel.deleteOne({ email });

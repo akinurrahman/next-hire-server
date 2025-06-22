@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ROLES } from "../constants";
 
 export const createUserSchema = z.object({
   body: z
@@ -17,6 +18,10 @@ export const createUserSchema = z.object({
       email: z
         .string({ required_error: "Email is required" })
         .email("Not a valid email"),
+      role: z.enum([ROLES.CANDIDATE, ROLES.RECRUITER], {
+        required_error: "Role is required",
+        invalid_type_error: "Role must be either candidate or recruiter",
+      }),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: "Password do not match",

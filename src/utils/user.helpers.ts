@@ -29,8 +29,9 @@ export const createUnverifiedUser = async (
     fullName: input.fullName,
     email: input.email,
     password: hashedPassword,
+    role: input.role,
     otpHash,
-    otpExpiresAt: new Date(Date.now() + 1000 * 60),
+    otpExpiresAt: new Date(Date.now() + 1000 * 60 * 10),
   });
 };
 

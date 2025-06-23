@@ -18,19 +18,23 @@ export interface JobDocument extends mongoose.Document {
     company: string;
     location: string;
     role: string;
-    description: string;
+    description?: string;
     startDate: Date;
     endDate?: Date;
     isCurrent: boolean;
     noticePeriod: number;
   };
   skills : string[];
+
   salary : {
-    type : "fixed" | "negotiable";
+    type : "fixed";
+    amount : number;
+    currency : string;
+  } | {
+    type : "negotiable";
     min : number;
     max : number;
     currency : string;
-    negotiable : boolean;
   }
   location : string;
   company : string;

@@ -1,16 +1,11 @@
 import { z } from "zod";
 import { ROLES } from "../constants";
-import { emailSchema, sanitizeString } from "./common.schema";
+import { emailSchema, sanitizedString } from "./common.schema";
 
 export const createUserSchema = z.object({
   body: z
     .object({
-      fullName: z
-        .string({
-          required_error: "Name is required",
-        })
-        .min(1, "Name cannot be empty")
-        .transform(sanitizeString),
+      fullName: sanitizedString("Full name is required"),
       password: z
         .string({
           required_error: "Password is required",

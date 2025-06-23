@@ -10,14 +10,10 @@ import connectDB from "./utils/connect";
 import baseRouter from "./routes";
 import errorHandler from "./middlewares/error-handler";
 import requestLogger from "./middlewares/request-logger";
-import { sanitizeInput } from "./middlewares/sanitize-input";
-import { getSanitizationConfig } from "./config/sanitization";
 
 const app = express();
 app.use(express.json());
 
-// Global input sanitization middleware - applies to all routes
-app.use(sanitizeInput(getSanitizationConfig()));
 
 app.use("/", requestLogger, baseRouter);
 

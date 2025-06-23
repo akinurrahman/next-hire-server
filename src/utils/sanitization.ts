@@ -34,10 +34,3 @@ export const richTextValidator = z.string().refine(
     message: "Bio contains disallowed HTML tags or unsafe content",
   }
 );
-
-// Rich text field for bio
-// bio: z
-//   .string()
-//   .optional()
-//   .transform((val) => (val ? sanitizeRichText(val) : val))
-//   .pipe(richTextValidator.optional())

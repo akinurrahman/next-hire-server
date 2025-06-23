@@ -1,29 +1,4 @@
-/**
- * Sanitization utilities for different contexts
- */
-
-export const sanitizeForDatabase = (value: any): any => {
-  if (typeof value === "string") {
-    return value
-      .trim()
-      .replace(/[<>]/g, "") // Remove potential HTML tags
-      .replace(/javascript:/gi, "") // Remove javascript: protocol
-      .replace(/data:/gi, ""); // Remove data: protocol
-  }
-  return value;
-};
-
-export const sanitizeForOutput = (value: any): any => {
-  if (typeof value === "string") {
-    return value
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#x27;");
-  }
-  return value;
-};
+import { z } from "zod";
 
 export const sanitizeRichText = (value: string): string => {
   // Remove dangerous tags and attributes while preserving safe HTML
@@ -37,10 +12,32 @@ export const sanitizeRichText = (value: string): string => {
     .trim();
 };
 
-export const validateRichText = (value: string): boolean => {
-  const disallowedTags =
-    /<(script|iframe|object|embed|form|input|button|select|textarea|style|link|meta)(\s[^>]*)?>/gi;
-  const dangerousProtocols = /javascript:|data:|vbscript:/gi;
+const disallowedTags =
+  /<(script|iframe|object|embed|form|input|button|select|textarea|style|link|meta)(\s[^>]*)?>/gi;
 
+export const validateRichText = (value: string): boolean => {
+  const dangerousProtocols = /javascript:|data:|vbscript:/gi;
   return !disallowedTags.test(value) && !dangerousProtocols.test(value);
 };
+
+export const richTextValidator = z.string().refine(
+  (value) => {
+    if (disallowedTags.test(value)) {
+      return false;
+    }
+    if (/javascript:/gi.test(value)) {
+      return false;
+    }
+    return true;
+  },
+  {
+    message: "Bio contains disallowed HTML tags or unsafe content",
+  }
+);
+
+// Rich text field for bio
+// bio: z
+//   .string()
+//   .optional()
+//   .transform((val) => (val ? sanitizeRichText(val) : val))
+//   .pipe(richTextValidator.optional())

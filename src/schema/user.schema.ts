@@ -1,28 +1,6 @@
 import { z } from "zod";
 import { ROLES } from "../constants";
-
-// Sanitization helpers
-const sanitizeString = (str: string) => str.trim();
-const sanitizeEmail = (email: string) => email.toLowerCase().trim();
-const sanitizeRichText = (text: string) => text.trim();
-
-// Rich text validator for bio field
-const richTextValidator = z.string().refine(
-  (value) => {
-    const disallowedTags =
-      /<(script|iframe|object|embed|form|input|button|select|textarea|style|link|meta)(\s[^>]*)?>/gi;
-    if (disallowedTags.test(value)) {
-      return false;
-    }
-    if (/javascript:/gi.test(value)) {
-      return false;
-    }
-    return true;
-  },
-  {
-    message: "Bio contains disallowed HTML tags or unsafe content",
-  }
-);
+import { emailSchema, sanitizeString } from "./common.schema";
 
 export const createUserSchema = z.object({
   body: z
@@ -41,20 +19,11 @@ export const createUserSchema = z.object({
       confirmPassword: z.string({
         required_error: "Confirm password is required",
       }),
-      email: z
-        .string({ required_error: "Email is required" })
-        .email("Not a valid email")
-        .transform(sanitizeEmail),
+      email: emailSchema,
       role: z.enum([ROLES.CANDIDATE, ROLES.RECRUITER], {
         required_error: "Role is required",
         invalid_type_error: "Role must be either candidate or recruiter",
       }),
-      // Rich text field for bio
-      bio: z
-        .string()
-        .optional()
-        .transform((val) => (val ? sanitizeRichText(val) : val))
-        .pipe(richTextValidator.optional()),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: "Password do not match",
@@ -64,29 +33,20 @@ export const createUserSchema = z.object({
 
 export const verifyOtpSchema = z.object({
   body: z.object({
-    email: z
-      .string({ required_error: "Email is required" })
-      .email("Not a valid email")
-      .transform(sanitizeEmail),
+    email: emailSchema,
     otp: z.string({ required_error: "OTP is required" }),
   }),
 });
 
 export const resendOtpSchema = z.object({
   body: z.object({
-    email: z
-      .string({ required_error: "Email is required" })
-      .email("Not a valid email")
-      .transform(sanitizeEmail),
+    email: emailSchema,
   }),
 });
 
 export const loginSchema = z.object({
   body: z.object({
-    email: z
-      .string({ required_error: "Email is required" })
-      .email("Not a valid email")
-      .transform(sanitizeEmail),
+    email: emailSchema,
     password: z.string({ required_error: "Password is required" }),
   }),
 });
@@ -99,10 +59,7 @@ export const refreshTokenSchema = z.object({
 
 export const forgotPasswordSchema = z.object({
   body: z.object({
-    email: z
-      .string({ required_error: "Email is required" })
-      .email("Not a valid email")
-      .transform(sanitizeEmail),
+    email: emailSchema,
   }),
 });
 

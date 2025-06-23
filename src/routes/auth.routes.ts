@@ -18,6 +18,7 @@ import {
   forgotPasswordSchema,
   resetPasswordSchema,
 } from "../schema/user.schema";
+import { sanitizeRichText } from "../utils/sanitization";
 
 const router = Router();
 
@@ -40,6 +41,11 @@ router
     "/reset-password",
     validateResource(resetPasswordSchema),
     resetPasswordHandler
-  );
+  )
+  .post("/test", (req, res) => {
+    const { name, description } = req.body;
+    const sanitizedDescription = sanitizeRichText(description);
+    res.json({ name, description: sanitizedDescription });
+  });
 
 export default router;

@@ -10,10 +10,16 @@ import connectDB from "./utils/connect";
 import baseRouter from "./routes";
 import errorHandler from "./middlewares/error-handler";
 import requestLogger from "./middlewares/request-logger";
+import sanitizationMiddleware from "./middlewares/sanitization.middleware";
 
 const app = express();
-app.use(express.json());
 
+// Security middleware
+app.use(express.json({ limit: "10mb" })); // Prevent large payload attacks
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// Global sanitization middleware
+app.use(sanitizationMiddleware);
 
 app.use("/", requestLogger, baseRouter);
 

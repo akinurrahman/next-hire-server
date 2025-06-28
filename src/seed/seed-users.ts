@@ -3,6 +3,7 @@ import { faker } from "@faker-js/faker";
 import User from "../models/auth/user.model";
 import dotenv from "dotenv";
 import { ROLES } from "../constants";
+import { hashPassword } from "../utils/hash";
 
 dotenv.config();
 
@@ -27,7 +28,7 @@ async function createDummyUsers(count: number) {
     const user = new User({
       fullName: faker.person.fullName(),
       email,
-      password: "123456",
+      password: await hashPassword("123456"),
       role: ROLES.RECRUITER,
     });
 

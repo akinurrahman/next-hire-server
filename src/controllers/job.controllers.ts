@@ -14,3 +14,10 @@ export const createJobHandler = asyncHandler(
     sendResponse(res, newJob, "Job created successfully", 201);
   }
 );
+
+export const getJobHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const jobs = await JobModel.find().populate("postedBy", "fullName email");
+    sendResponse(res, jobs, "Jobs fetched successfully", 200);
+  }
+);

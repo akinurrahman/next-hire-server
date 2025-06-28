@@ -18,6 +18,7 @@ import {
   forgotPasswordSchema,
   resetPasswordSchema,
 } from "../schema/user.schema";
+import { requireAuthentication } from "../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -38,6 +39,7 @@ router
   )
   .post(
     "/reset-password",
+    requireAuthentication,
     validateResource(resetPasswordSchema),
     resetPasswordHandler
   )

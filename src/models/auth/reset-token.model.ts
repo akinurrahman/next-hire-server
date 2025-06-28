@@ -1,13 +1,5 @@
-import { Document, model, Schema, Types } from "mongoose";
-
-export interface ResetTokenDocument extends Document {
-  _id: Types.ObjectId;
-  email: string;
-  token: string;
-  expiresAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { model, Schema } from "mongoose";
+import { ResetTokenDocument } from "../../interfaces/auth.interface";
 
 const resetTokenSchema = new Schema<ResetTokenDocument>(
   {

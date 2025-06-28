@@ -12,8 +12,10 @@ interface TokenResponse {
 }
 
 const JWT_SECRET = config.get<string>("JWT_SECRET");
-const ACCESS_TOKEN_EXPIRY = "15m";
-const REFRESH_TOKEN_EXPIRY = "7d";
+const NODE_ENV = config.get<string>("NODE_ENV");
+
+const ACCESS_TOKEN_EXPIRY = NODE_ENV === "production" ? "15m" : "1h";
+const REFRESH_TOKEN_EXPIRY = NODE_ENV === "production" ? "7d" : "1h";
 
 export const generateTokens = (payload: TokenPayload): TokenResponse => {
   const accessToken = jwt.sign(payload, JWT_SECRET, {

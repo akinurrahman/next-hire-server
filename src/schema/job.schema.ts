@@ -1,6 +1,10 @@
 import { z } from "zod";
-import { sanitizedString, sanitizeString } from "./common.schema";
-import { richTextValidator, sanitizeRichText } from "../utils/sanitization";
+import {
+  isoDateString,
+  sanitizedString,
+  sanitizeString,
+} from "./common.schema";
+import { sanitizeRichText } from "../utils/sanitization";
 
 const noExperienceSchema = z.object({
   type: z.literal("no-experience"),
@@ -21,8 +25,8 @@ const experienceDetailSchema = z.object({
     .string({ required_error: "Description is required" })
     .transform(sanitizeString)
     .optional(),
-  startDate: z.date({ required_error: "Start date is required" }),
-  endDate: z.date().optional(),
+  startDate: isoDateString("Start date is required"),
+  endDate: isoDateString().optional(),
   isCurrent: z.boolean(),
   noticePeriod: z.number(),
 });
@@ -39,23 +43,27 @@ const negotiableSalarySchema = z.object({
   type: z.literal("negotiable"),
   min: z.number().min(0),
   max: z.number().min(0),
+  currency: z.string(),
 });
 
 const salarySchema = z.union([fixedSalarySchema, negotiableSalarySchema]);
 
 export const jobSchema = z.object({
   body: z.object({
-    title: sanitizedString("Job Title is required"),
-    description: sanitizedString("Job Description is required")
-      .transform((val) => (val ? sanitizeRichText(val) : val))
-      .pipe(richTextValidator.optional()),
+    title: z
+      .string({ required_error: "Job Title is required" })
+      .min(1, "Job Title cannot be empty")
+      .transform(sanitizeString),
+    description: z
+      .string()
+      .transform((val) => (val ? sanitizeRichText(val) : val)),
     type: z.enum(["full-time", "part-time", "freelance", "remote", "hybrid"], {
       required_error: "Type is required",
     }),
     education: z.object({
       name: sanitizedString("Education name is required"),
-      startDate: z.date({ required_error: "Start date is required" }),
-      endDate: z.date().optional(),
+      startDate: isoDateString("Start date is required"),
+      endDate: isoDateString().optional(),
       isCurrent: z.boolean({ required_error: "Is current is required" }),
     }),
     experience: experieceSchema,
@@ -64,8 +72,19 @@ export const jobSchema = z.object({
       .transform((skills) => skills.map(sanitizeString)),
 
     salary: salarySchema,
-    location: sanitizedString("Location is required"),
+    location: z
+      .string({ required_error: "Location is required" })
+      .min(1, "Location cannot be empty")
+      .transform(sanitizeString),
+    status: z.enum(["active", "inactive", "draft"], {
+      required_error: "Status is required",
+    }).optional(),
+    company: z
+      .string({ required_error: "Company name is required" })
+      .min(1, "Company name cannot be empty")
+      .transform(sanitizeString),
+    applicationDeadline: isoDateString().optional(),
   }),
 });
 
-export type JobInput = z.infer<typeof jobSchema>["body"];
+export type CreateJobInput = z.infer<typeof jobSchema>["body"];

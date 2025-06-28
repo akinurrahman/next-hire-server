@@ -11,3 +11,8 @@ export const emailSchema = z
   .email("Not a valid email")
   .transform(sanitizeEmail);
 
+export const isoDateString = (requiredError?: string) =>
+  z
+    .string({ required_error: requiredError || "Date is required" })
+    .datetime("Invalid ISO date format");
+

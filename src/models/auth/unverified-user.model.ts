@@ -1,17 +1,6 @@
-import { Document, model, Schema, Types } from "mongoose";
+import { model, Schema } from "mongoose";
 import { ROLES } from "../../constants";
-
-export interface OtpVerificationDocument extends Document {
-  _id: Types.ObjectId;
-  fullName: String;
-  email: string;
-  password: String;
-  otpHash: string;
-  otpExpiresAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
-  role: typeof ROLES.CANDIDATE | typeof ROLES.CANDIDATE;
-}
+import { OtpVerificationDocument } from "../../interfaces/auth.interface";
 
 const unVerifiedUserSchema = new Schema<OtpVerificationDocument>(
   {

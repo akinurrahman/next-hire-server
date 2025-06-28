@@ -1,36 +1,73 @@
-import { z } from "zod";
+import xss from "xss";
 
 export const sanitizeRichText = (value: string): string => {
-  // Remove dangerous tags and attributes while preserving safe HTML
-  return value
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
-    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, "")
-    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, "")
-    .replace(/<embed\b[^<]*(?:(?!<\/embed>)<[^<]*)*<\/embed>/gi, "")
-    .replace(/javascript:/gi, "")
-    .replace(/on\w+\s*=/gi, "") // Remove event handlers
-    .trim();
+  return xss(value, {
+    whiteList: {
+      // Headings
+      h1: [],
+      h2: [],
+      h3: [],
+      h4: [],
+      h5: [],
+      h6: [],
+
+      // Paragraphs and text formatting
+      p: [],
+      strong: [],
+      em: [],
+      u: [],
+      s: [],
+      sub: [],
+      sup: [],
+
+      // Code formatting
+      code: [],
+      pre: [],
+
+      // Lists
+      ul: [],
+      ol: [],
+      li: [],
+
+      // Links and media
+      a: ["href", "title", "target"],
+      img: ["src", "alt", "title"],
+
+      // Semantic elements
+      blockquote: [],
+      span: ["class"],
+
+      // Tables (uncomment if needed)
+      // table: [],
+      // thead: [],
+      // tbody: [],
+      // tr: [],
+      // td: [],
+      // th: [],
+
+      // Line breaks and dividers
+      br: [],
+      hr: [],
+    },
+    stripIgnoreTag: true, // removes disallowed tags like <script>, <style>
+    stripIgnoreTagBody: ["script", "style"], // removes the tag body too
+
+    // Additional security for links
+    onTagAttr: (tag: string, name: string, value: string) => {
+      if (tag === "a" && name === "href") {
+        // Block javascript:, data:, and vbscript: URLs
+        if (/^(javascript|data|vbscript):/i.test(value)) {
+          return "";
+        }
+        // Optionally restrict to HTTP/HTTPS only
+        if (!/^(https?:\/\/|\/|#)/i.test(value)) {
+          return "";
+        }
+      }
+      if (tag === "a" && name === "target" && value === "_blank") {
+        // Add rel="noopener noreferrer" for security
+        return 'target="_blank" rel="noopener noreferrer"';
+      }
+    },
+  });
 };
-
-const disallowedTags =
-  /<(script|iframe|object|embed|form|input|button|select|textarea|style|link|meta)(\s[^>]*)?>/gi;
-
-export const validateRichText = (value: string): boolean => {
-  const dangerousProtocols = /javascript:|data:|vbscript:/gi;
-  return !disallowedTags.test(value) && !dangerousProtocols.test(value);
-};
-
-export const richTextValidator = z.string().refine(
-  (value) => {
-    if (disallowedTags.test(value)) {
-      return false;
-    }
-    if (/javascript:/gi.test(value)) {
-      return false;
-    }
-    return true;
-  },
-  {
-    message: "Bio contains disallowed HTML tags or unsafe content",
-  }
-);

@@ -1,15 +1,6 @@
-import { Document, model, Schema, Types } from "mongoose";
+import { model, Schema } from "mongoose";
 import { ROLES } from "../../constants";
-
-export interface UserDocument extends Document {
-  _id: Types.ObjectId;
-  email: string;
-  fullName: string;
-  password: string;
-  createdAt: Date;
-  updatedAt: Date;
-  role: (typeof ROLES)[keyof typeof ROLES];
-}
+import { UserDocument } from "../../interfaces/auth.interface";
 
 const userSchema = new Schema<UserDocument>(
   {

@@ -76,9 +76,11 @@ export const jobSchema = z.object({
       .string({ required_error: "Location is required" })
       .min(1, "Location cannot be empty")
       .transform(sanitizeString),
-    status: z.enum(["active", "inactive", "draft"], {
-      required_error: "Status is required",
-    }).optional(),
+    status: z
+      .enum(["active", "inactive", "draft"], {
+        required_error: "Status is required",
+      })
+      .optional(),
     company: z
       .string({ required_error: "Company name is required" })
       .min(1, "Company name cannot be empty")

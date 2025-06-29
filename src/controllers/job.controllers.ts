@@ -2,7 +2,8 @@ import asyncHandler from "../utils/async-handler";
 import { Request, Response } from "express";
 import { CreateJobInput } from "../schema/job.schema";
 import JobModel from "../models/job.model";
-import { sendResponse } from "../utils/api-response";
+import { sendResponse, sendPaginatedResponse } from "../utils/api-response";
+import { getJobs } from "../services/job.services";
 
 export const createJobHandler = asyncHandler(
   async (req: Request<{}, {}, CreateJobInput>, res: Response) => {
@@ -17,7 +18,15 @@ export const createJobHandler = asyncHandler(
 
 export const getJobHandler = asyncHandler(
   async (req: Request, res: Response) => {
-    const jobs = await JobModel.find().populate("postedBy", "fullName email");
-    sendResponse(res, jobs, "Jobs fetched successfully", 200);
+    const paginatedResult = await getJobs(req.query);
+
+    sendPaginatedResponse(
+      res,
+      paginatedResult,
+      req.query.search
+        ? "Search results fetched successfully"
+        : "Jobs fetched successfully",
+      200
+    );
   }
 );

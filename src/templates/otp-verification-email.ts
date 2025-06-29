@@ -1,4 +1,4 @@
-import { APP_NAME } from "../constants/http-status";
+import { APP_NAME } from "../constants";
 
 export const generateOtpVerificationEmail = (otp: number) => ({
   text: `Welcome to ${APP_NAME}!\n\nYour OTP is ${otp}. Valid for 10 minutes.`,

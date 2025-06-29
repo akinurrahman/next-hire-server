@@ -25,6 +25,4 @@ export const HTTP_STATUS = {
 };
 
 
-export const APP_NAME = "Next-Hire";
-export const FRONTEND_URL = "http://localhost:3000";
-export const SUPPORT_EMAIL = "support@nexthire.com";
+

@@ -1,6 +1,6 @@
 import config from "config";
 import nodemailer from "nodemailer";
-import { APP_NAME } from "../constants/http-status";
+import { APP_NAME } from "../constants";
 
 export interface SendEmailOptions {
   to: string;

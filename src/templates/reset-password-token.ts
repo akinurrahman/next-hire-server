@@ -1,4 +1,4 @@
-import { APP_NAME, FRONTEND_URL, SUPPORT_EMAIL } from "../constants/http-status";
+import { APP_NAME, FRONTEND_URL, SUPPORT_EMAIL } from "../constants";
 
 export interface ResetPasswordEmailData {
   token: string;

@@ -16,3 +16,10 @@ export const isoDateString = (requiredError?: string) =>
     .string({ required_error: requiredError || "Date is required" })
     .datetime("Invalid ISO date format");
 
+export const idSchema = z.object({
+  params: z.object({
+    id: z.string({ required_error: "Id is required" }),
+  }),
+});
+
+export type IdSchema = z.infer<typeof idSchema>["params"];

@@ -5,17 +5,9 @@ import {
   SearchQuery,
 } from "../types/query.types";
 
-// ========================
-// SIMPLE CONSTANTS
-// ========================
-
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 100;
-
-// ========================
-// HELPER FUNCTIONS
-// ========================
 
 /**
  * Clean search input to prevent injection

@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { PaginatedResult } from "../types/pagination.types";
+import { PaginatedResult } from "../types/query.types";
 
 export const sendResponse = <T>(
   res: Response,

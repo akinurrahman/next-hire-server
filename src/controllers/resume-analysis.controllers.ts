@@ -1,8 +1,10 @@
 import asyncHandler from "../utils/async-handler";
 import { resumeAnalysisSchema } from "../schema/resume-analysis.schema";
 import { BadRequestError } from "../utils/errors";
-import { analyzeResumeAI, extractResumeText } from "../services/resume-analysis.services";
-
+import {
+  analyzeResumeAI,
+  extractResumeText,
+} from "../services/resume-analysis.services";
 
 export const analyzeResumeHandler = asyncHandler(async (req, res) => {
   if (!req.file) {
@@ -18,9 +20,14 @@ export const analyzeResumeHandler = asyncHandler(async (req, res) => {
   const resumeText = await extractResumeText(file);
   const analysis = await analyzeResumeAI(resumeText);
 
+  // Parse the analysis response
+  const parsedAnalysis = JSON.parse(
+    analysis || '{"suggestions": [], "score": 0, "summary": "", "keywords": []}'
+  );
+
   res.status(200).json({
     success: true,
     message: "Resume analyzed successfully",
-    data: JSON.parse(analysis || "[]"),
+    data: parsedAnalysis,
   });
 });

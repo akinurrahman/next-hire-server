@@ -36,32 +36,35 @@ export const extractResumeText = async (file: any) => {
 const prompt = `
 You are a helpful and friendly resume improvement assistant.
 
-Carefully review the resume text provided and give actionable feedback in a **JSON array of suggestion objects**.
+Carefully review the resume text provided and give actionable feedback in a **JSON object** with the following structure:
 
-Each suggestion should follow this exact structure:
-
-[
-  {
-    "id": "1",
-    "type": "critical" | "warning" | "improvement" | "success",
-    "title": "Short title for the suggestion",
-    "description": "1–3 lines in simple, friendly language",
-    "priority": "high" | "medium" | "low",
-    "impact": "Optional: e.g. '40% higher response rate'",
-    "category": "Contact" | "Content" | "Optimization" | "Writing" | "Structure",
-    "icon": "LucideIconName" // Must be a valid icon name from lucide.dev (e.g. 'Mail', 'User', 'Search')
-  },
-  {
-    "id": "2",
-    "type": "improvement",
-    "title": "Another suggestion",
-    "description": "Another improvement area",
-    "priority": "medium",
-    "impact": "Better visibility",
-    "category": "Content",
-    "icon": "FileText"
-  }
-]
+{
+  "suggestions": [
+    {
+      "id": "1",
+      "type": "critical" | "warning" | "improvement" | "success",
+      "title": "Short title for the suggestion",
+      "description": "1–3 lines in simple, friendly language",
+      "priority": "high" | "medium" | "low",
+      "impact": "3-4 words max with percentage if possible (e.g. '40% higher response rate', 'Better ATS compatibility', '25% more interviews')",
+      "category": "Contact" | "Content" | "Optimization" | "Writing" | "Structure",
+      "icon": "LucideIconName" // Must be a valid icon name from lucide.dev (e.g. 'Mail', 'User', 'Search')
+    },
+    {
+      "id": "2",
+      "type": "improvement",
+      "title": "Another suggestion",
+      "description": "Another improvement area",
+      "priority": "medium",
+      "impact": "30% better visibility",
+      "category": "Content",
+      "icon": "FileText"
+    }
+  ],
+  "score": 75,
+  "summary": "Your resume shows good technical skills but needs improvements in formatting and content structure.",
+  "keywords": ["React", "Node.js", "TypeScript", "MongoDB", "AWS", "Docker"]
+}
 
 ---
 
@@ -69,47 +72,62 @@ Each suggestion should follow this exact structure:
 - Return **at least 3 suggestions** (5 is ideal).
 - Include meaningful, specific improvements.
 - Don't repeat the same type of suggestion.
-- ALWAYS return an array with multiple objects.
+- Score should be between 0-100 based on overall quality.
+- Summary should be 1-2 sentences describing the resume's current state.
+- Keywords should be 5-10 relevant skills/technologies to add.
 
 ✅ If the resume is truly perfect:
-Return exactly **one object** in an array:
+Return exactly **one suggestion** with high score:
 
-[
-  {
-    "id": "1",
-    "type": "success",
-    "title": "Excellent Resume",
-    "description": "Your resume is clean, well-structured, and covers everything important. No major improvements needed.",
-    "priority": "low",
-    "impact": "Top-tier quality",
-    "category": "Structure",
-    "icon": "CheckCircle"
-  }
-]
+{
+  "suggestions": [
+    {
+      "id": "1",
+      "type": "success",
+      "title": "Excellent Resume",
+      "description": "Your resume is clean, well-structured, and covers everything important. No major improvements needed.",
+      "priority": "low",
+      "impact": "Top-tier quality",
+      "category": "Structure",
+      "icon": "CheckCircle"
+    }
+  ],
+  "score": 95,
+  "summary": "Your resume is well-crafted and professional. It effectively showcases your skills and experience.",
+  "keywords": []
+}
 
 ⚠️ If the input is **not a resume** (like a blog post, invoice, or story), return:
 
-[
-  {
-    "id": "1",
-    "type": "warning",
-    "title": "Unrecognized Content",
-    "description": "The uploaded file doesn't look like a resume. Please upload a valid resume document.",
-    "priority": "medium",
-    "impact": "Cannot provide suggestions without a resume",
-    "category": "Structure",
-    "icon": "AlertTriangle"
-  }
-]
+{
+  "suggestions": [
+    {
+      "id": "1",
+      "type": "warning",
+      "title": "Unrecognized Content",
+      "description": "The uploaded file doesn't look like a resume. Please upload a valid resume document.",
+      "priority": "medium",
+      "impact": "Cannot provide suggestions",
+      "category": "Structure",
+      "icon": "AlertTriangle"
+    }
+  ],
+  "score": 0,
+  "summary": "The uploaded content does not appear to be a resume.",
+  "keywords": []
+}
 
 ---
 
 ❗ Output Rules:
-- MUST return a valid **JSON array only**.
+- MUST return a valid **JSON object** with suggestions, score, summary, and keywords.
 - DO NOT include code formatting, markdown, or explanation.
-- DO NOT return plain objects or JSON strings — only valid arrays.
-- ALWAYS wrap your response in square brackets [].
+- Score must be a number between 0-100.
+- Summary must be 1-2 sentences.
+- Keywords must be an array of strings (5-10 items max).
 - Each suggestion must be a complete object with all required fields.
+- Impact field must be 3-4 words max with percentage when possible.
+- Required suggestion fields: id, type, title, description, priority, impact, category, icon
 `;
 
 export const analyzeResumeAI = async (resumeText: string) => {

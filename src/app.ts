@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use(cors({
   origin: "*",
-  credentials: true,
+  // credentials: true,
 }));
 
 // Global sanitization middleware

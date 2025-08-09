@@ -11,7 +11,6 @@ import baseRouter from "./routes";
 import errorHandler from "./middlewares/error-handler";
 import requestLogger from "./middlewares/request-logger";
 import sanitizationMiddleware from "./middlewares/sanitization.middleware";
-import { FRONTEND_URL } from "./constants";
 import cors from "cors";
 
 const app = express();
@@ -21,7 +20,7 @@ app.use(express.json({ limit: "10mb" })); // Prevent large payload attacks
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use(cors({
-  origin: FRONTEND_URL,
+  origin: "*",
   credentials: true,
 }));
 

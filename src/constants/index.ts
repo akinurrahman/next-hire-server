@@ -1,3 +1,5 @@
+import config from "config";
+
 export const ROLES = {
   RECRUITER : "recruiter",
   CANDIDATE: "candidate",
@@ -5,5 +7,9 @@ export const ROLES = {
 } as const;
 
 export const APP_NAME = "Next-Hire";
-export const FRONTEND_URL = "http://localhost:3000";
+const nodeEnv = config.get<string>("NODE_ENV");
+export const FRONTEND_URL =
+  nodeEnv === "development"
+    ? "http://localhost:3000"
+    : "https://nexthire.akinurrahman.com";
 export const SUPPORT_EMAIL = "support@nexthire.com";
